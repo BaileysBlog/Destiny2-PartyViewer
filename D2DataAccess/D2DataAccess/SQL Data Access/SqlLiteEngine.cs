@@ -25,7 +25,7 @@ namespace D2DataAccess.SqLite
             return await await Task.Factory.StartNew(async () =>
             {
                 var dataSet = new Dictionary<long, String>();
-                var query = $"select id, json from '{TableName}'";
+                var query = $"select id, json from {TableName}";
                 using (var command = new SQLiteCommand(query, Connection))
                 {
                     var reader = await command.ExecuteReaderAsync();

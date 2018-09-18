@@ -30,10 +30,9 @@ namespace SearchPlayer
                 foreach (var character in characters)
                 {
                     var classes = Api.DataEngine.GetTableDump<dynamic>(DestinyTable.ClassDefinition).Result;
-                    var _class = classes.Where(x => x.Key == character.Value.classHash);
+                    var _class = classes.Where(x => x.Value.hash == character.Value.classHash);
                     Console.WriteLine($"{_class.First().Value.displayProperties.name} {character.Value.light}");
                 }
-                
             }
             else
             {
