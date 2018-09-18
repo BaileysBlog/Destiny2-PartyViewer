@@ -20,6 +20,7 @@ namespace D2DataAccess.Enums
         DataNotFound = 11,
         InsufficientPrivileges = 12,
         Duplicate = 13,
-        UnknownSqlResult = 14
+        UnknownSqlResult = 14,
+        ApiInvalidOrExpiredKey = 2101
     }
 }

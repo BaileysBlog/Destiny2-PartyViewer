@@ -15,6 +15,7 @@ namespace D2ApiTest
         public async Task SearchDestinyPlayer()
         {
             var bailey = await Api.SearchUsers("Holy Breadstick");
+            Assert.IsTrue(bailey.ErrorCode != PlatformErrorCodes.ApiInvalidOrExpiredKey, $"Api Key Error: {bailey.Message}");
             Assert.IsNotNull(bailey);
         }
 
@@ -22,6 +23,7 @@ namespace D2ApiTest
         public async Task GetBungieNetUserById()
         {
             var bailey = await Api.GetBungieNetUserById(303575);
+            Assert.IsTrue(bailey.ErrorCode != PlatformErrorCodes.ApiInvalidOrExpiredKey, $"Api Key Error: {bailey.Message}");
             Assert.IsNotNull(bailey, "Was expecting value");
         }
 

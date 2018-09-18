@@ -15,5 +15,26 @@ namespace D2DataAccess.Data
             string path = $"Destiny2/SearchDestinyPlayer/{(int)membershipType}/{displayName}/";
             return await _Web.GetAsync<SearchDestinyPlayerResponse>(path).ConfigureAwait(false);
         }
+
+        public async Task<DestinyProfileResponse> GetProfile(long destinyMembershipId, BungieMembershipType membershipType, params DestinyComponentType[] components)
+        {
+            string path = $"Destiny2/{(int)membershipType}/Profile/{destinyMembershipId}/?components={FormatComponents(components)}";
+            return await _Web.GetAsync<DestinyProfileResponse>(path, false).ConfigureAwait(false);
+        }
+
+
+        private String FormatComponents(DestinyComponentType[] components)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var comp in components)
+            {
+                builder.Append($"{(int)comp},");
+            }
+
+            builder[builder.Length - 1] = ' ';
+
+            return builder.ToString();
+        }
     }
 }
