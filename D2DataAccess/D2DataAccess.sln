@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D2DataAccess", "D2DataAccess\D2DataAccess.csproj", "{85224548-622C-4593-8235-3CA1702F21F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D2ApiTest", "D2ApiTest\D2ApiTest.csproj", "{9E744768-25FF-4A93-A2DC-505AB4C6750C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D2ApiTest", "D2ApiTest\D2ApiTest.csproj", "{9E744768-25FF-4A93-A2DC-505AB4C6750C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchPlayer", "SearchPlayer\SearchPlayer.csproj", "{3F9D9628-6F76-4066-BA1B-858D8C2304A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9E744768-25FF-4A93-A2DC-505AB4C6750C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9E744768-25FF-4A93-A2DC-505AB4C6750C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9E744768-25FF-4A93-A2DC-505AB4C6750C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F9D9628-6F76-4066-BA1B-858D8C2304A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F9D9628-6F76-4066-BA1B-858D8C2304A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F9D9628-6F76-4066-BA1B-858D8C2304A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F9D9628-6F76-4066-BA1B-858D8C2304A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

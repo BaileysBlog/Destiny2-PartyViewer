@@ -16,8 +16,7 @@ namespace D2ApiTest
 
         public BaseTest()
         {
-            Api = new Destiny2Api(ApiKey, new UserAgentHeader("Destiny 2 Party Viewer", "1.0.0", "Unit Tests", 0, "https://www.d2-partyviewer.com", "baileymiller@live.com"));
-
+            Api = new Destiny2Api(ApiKey, new UserAgentHeader("Destiny 2 Party Viewer", "1.0.0", "Unit Tests", 0, "https://www.d2-partyviewer.com", "baileymiller@live.com"), @"C:\Users\Bailey Miller\Desktop\Destiny 2 Manifest\worldAssets\world.content");
         }
     }
 }
