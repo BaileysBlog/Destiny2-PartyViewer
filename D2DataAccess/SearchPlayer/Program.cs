@@ -20,25 +20,43 @@ namespace SearchPlayer
             Console.WriteLine("Enter a PC name to get the character list");
             var name = Console.ReadLine();
 
+            Console.Title = $"Display Information for {name}";
+
 
             var profile = Api.SearchDestinyPlayer(name, BungieMembershipType.TigerBlizzard).Result;
 
             if (profile.Response != null)
             {
                 var player = profile.Response.First();
-                var characters = (Api.GetProfile(player.membershipId, BungieMembershipType.TigerBlizzard, DestinyComponentType.Characters).Result).Response.characters.data;
-                foreach (var character in characters)
+                var characterBreakdowns = Api.GetCharacterBreakdowns(player.membershipId, BungieMembershipType.TigerBlizzard).Result;
+                foreach (var character in characterBreakdowns)
                 {
-                    var classes = Api.DataEngine.GetTableDump<dynamic>(DestinyTable.ClassDefinition).Result;
-                    var _class = classes.Where(x => x.Value.hash == character.Value.classHash);
-                    Console.WriteLine($"{_class.First().Value.displayProperties.name} {character.Value.light}");
+                    Console.WriteLine(
+$@"{character.Value.Class}-{character.Value.Race} {character.Value.Gender}
+Power-{character.Value.Light} LeveL-{character.Value.LevelProgression.level}
+
+Super       {character.Value.Super.displayProperties.name}
+Primary     {character.Value.Primary.displayProperties.name}
+Seconday    {character.Value.Secondary.displayProperties.name}
+Heavy       {character.Value.Heavy.displayProperties.name}
+
+Helmet      {character.Value.Helm.displayProperties.name}
+Arms        {character.Value.Arms.displayProperties.name}
+Chest       {character.Value.Chest.displayProperties.name}
+Feet        {character.Value.Feet.displayProperties.name}
+Class Gear  {character.Value.ClassGear.displayProperties.name}
+
+Current Activity
+{(character.Value.CurrentActivity == null ? "Orbit or no activity": character.Value.CurrentActivity.name)}
+
+======================================================================");
                 }
+
             }
             else
             {
                 // Dead
             }
-
 
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();

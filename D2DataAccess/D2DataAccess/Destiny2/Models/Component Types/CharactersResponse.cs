@@ -22,6 +22,8 @@ namespace D2DataAccess.Destiny2.Models.Component_Types
         public Int32 light { get; set; }
         public Dictionary<UInt32, Int32> stats = new Dictionary<uint, int>();
         public UInt32 classHash { get; set; }
+        public UInt32 raceHash { get; set; }
+        public UInt32 genderHash { get; set; }
         public string emblemPath { get; set; }
         public string emblemBackgroundPath { get; set; }
         public UInt32 emblemHash { get; set; }

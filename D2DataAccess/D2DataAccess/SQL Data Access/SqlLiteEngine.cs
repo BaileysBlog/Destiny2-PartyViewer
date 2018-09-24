@@ -17,6 +17,8 @@ namespace D2DataAccess.SqLite
             var builder = new SQLiteConnectionStringBuilder { DataSource = LocalPath.FullName };
             Connection = new SQLiteConnection(builder.ToString());
             Connection.Open();
+            Connection.EnableExtensions(true);
+            Connection.LoadExtension("SQLite.Interop.dll", "sqlite3_json_init");
         }
 
 
@@ -25,14 +27,18 @@ namespace D2DataAccess.SqLite
             return await await Task.Factory.StartNew(async () =>
             {
                 var dataSet = new Dictionary<long, String>();
-                var query = $"select id, json from {TableName}";
+                var query = 
+$@"SELECT json_tree.value,json_extract({TableName}.json, '$')
+FROM {TableName}, json_tree({TableName}.json, '$')
+WHERE json_tree.key = 'hash'";
                 using (var command = new SQLiteCommand(query, Connection))
                 {
                     var reader = await command.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
                         var body = reader.GetString(1);
-                        dataSet.Add(reader.GetInt64(0), body);
+                        var hash = reader.GetInt64(0);
+                        dataSet.Add(hash, body);
                     }
                 }
                 return dataSet;
@@ -61,10 +67,12 @@ namespace D2DataAccess.SqLite
             return await await Task.Factory.StartNew(async () =>
             {
                 var dataSet = new Dictionary<long, T>();
-                var query = $"select id, json from '{TableName}' where id in (@hashes)";
+                var query = 
+$@"SELECT json_tree.value,json_extract({TableName}.json, '$')
+FROM {TableName}, json_tree({TableName}.json, '$')
+WHERE json_tree.key = 'hash' and json_tree.value in ({GetArrayWhereBlock(itemHashes)})";
                 using (var command = new SQLiteCommand(query, Connection))
                 {
-                    command.Parameters.AddWithValue("@hashes", itemHashes);
                     var reader = await command.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
@@ -74,6 +82,20 @@ namespace D2DataAccess.SqLite
                 }
                 return dataSet;
             }).ConfigureAwait(false);
+        }
+
+        public String GetArrayWhereBlock<T>(IEnumerable<T> Array)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var item in Array)
+            {
+                builder.Append($"{item},");
+            }
+
+            builder.Remove(builder.Length - 1, 1);
+
+            return builder.ToString();
         }
     }
 }

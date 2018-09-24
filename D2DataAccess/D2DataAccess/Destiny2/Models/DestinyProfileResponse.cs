@@ -16,5 +16,7 @@ namespace D2DataAccess.Destiny2.Models
         public ProfilesResponse profile { get; set; }
         public CharactersResponse characters { get; set; }
         public CharacterEquipmentResponse characterEquipment { get; set; }
+        public CharacterActivitiesResponse characterActivities { get; set; }
+
     }
 }
