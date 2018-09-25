@@ -1,10 +1,12 @@
 ﻿using D2DataAccess.Data;
 using D2DataAccess.Enums;
 using D2DataAccess.Models;
+using D2DataAccess.Simple;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SearchPlayer
@@ -13,25 +15,83 @@ namespace SearchPlayer
     {
         protected const string ApiKey = "57a4ba76e897450f8b106635fd20460b";
         static Destiny2Api Api = new Destiny2Api(ApiKey, new UserAgentHeader("Destiny 2 Party Viewer", "1.0.0", "Console Program", 0, "https://www.d2-partyviewer.com", "baileymiller@live.com"), @"C:\Users\Bailey Miller\Desktop\Destiny 2 Manifest\worldAssets\world.content");
+        static string TrackedProfile;
         static void Main(string[] args)
         {
             Console.Title = "Destiny 2 Searcher";
+            var dbUpdate = Api.DatabaseNeedsUpdate().Result;
+            SetupStartingLoop();
+        }
 
-            Console.WriteLine("Enter a PC name to get the character list");
-            var name = Console.ReadLine();
+        static void SetupStartingLoop()
+        {
+            Console.WriteLine("Enter a PC name to begin tracking the active character");
+            TrackedProfile = Console.ReadLine();
 
-            Console.Title = $"Display Information for {name}";
+            Console.Title = $"Display Information for {TrackedProfile}";
+            
+            Console.CancelKeyPress += CloseConsole;
 
+            DisplayAccountInformation();
+        }
 
-            var profile = Api.SearchDestinyPlayer(name, BungieMembershipType.TigerBlizzard).Result;
+        private static void CloseConsole(object sender, ConsoleCancelEventArgs e)
+        {
+            Console.Clear();
+
+            Console.WriteLine("Search New Account? Y/N");
+            var key = Console.ReadKey().Key;
+
+            if (key == ConsoleKey.Y)
+            {
+                Console.Clear();
+                SetupStartingLoop();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Closing in 2 seconds . . .");
+                Task.Delay(TimeSpan.FromSeconds(2)).Wait();
+                Environment.Exit(0);
+            }
+        }
+
+        static void DisplayAccountInformation()
+        {
+            var profile = Api.SearchDestinyPlayer(TrackedProfile, BungieMembershipType.TigerBlizzard).Result;
 
             if (profile.Response != null)
             {
                 var player = profile.Response.First();
                 var characterBreakdowns = Api.GetCharacterBreakdowns(player.membershipId, BungieMembershipType.TigerBlizzard).Result;
-                foreach (var character in characterBreakdowns)
+
+                if (characterBreakdowns.Count(x => x.Value.CurrentActivity == null) == characterBreakdowns.Count)
                 {
-                    Console.WriteLine(
+                    Console.WriteLine("Either character(s) are in orbit or not active");
+                    LogCharacterData(characterBreakdowns);
+                }
+                else
+                {
+                    var watchedCharacter = characterBreakdowns.First(x => x.Value.CurrentActivity != null);
+                    LogCharacterData(new Dictionary<long, CharacterOverview>() { {watchedCharacter.Key, watchedCharacter.Value } });
+                }
+            }
+            else
+            {
+                // Dead
+            }
+            Console.WriteLine($"Updating at {DateTime.Now.AddMinutes(1).ToLongTimeString()}");
+            Task.Delay(TimeSpan.FromMinutes(1)).Wait();
+            
+            DisplayAccountInformation();
+        }
+
+        static void LogCharacterData(Dictionary<long, CharacterOverview> characterBreakdowns)
+        {
+            Console.Clear();
+            foreach (var character in characterBreakdowns)
+            {
+                Console.WriteLine(
 $@"{character.Value.Class}-{character.Value.Race} {character.Value.Gender}
 Power-{character.Value.Light} LeveL-{character.Value.LevelProgression.level}
 
@@ -47,19 +107,9 @@ Feet        {character.Value.Feet.displayProperties.name}
 Class Gear  {character.Value.ClassGear.displayProperties.name}
 
 Current Activity
-{(character.Value.CurrentActivity == null ? "Orbit or no activity": character.Value.CurrentActivity.name)}
-
-======================================================================");
-                }
-
+{(character.Value.CurrentActivity == null ? "Orbit or no activity" : character.Value.CurrentActivity.name)}
+{(characterBreakdowns.Count == 1 ? "": "\n======================================================================")}");
             }
-            else
-            {
-                // Dead
-            }
-
-            Console.WriteLine("Press any key to exit");
-            Console.ReadKey();
         }
     }
 }

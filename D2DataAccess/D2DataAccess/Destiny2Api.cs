@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
+using D2DataAccess.Extensions;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace D2DataAccess.Data
 {
@@ -43,5 +46,37 @@ namespace D2DataAccess.Data
 
             DataEngine = new SQLiteDestinyEngine(new FileInfo(DB_Path));
         }
+
+        public String GetIconLink(String IconPath)
+        {
+            return String.Concat("https://www.bungie.net", IconPath);
+        }
+
+        public async Task<Nullable<bool>> DatabaseNeedsUpdate(String locale = "en")
+        {
+            // Load the manifest and check the name of the current db file against the returned value
+            var curDb = DataEngine.CurrentDatabase;
+
+            var manfiest = await GetDestinyManifest();
+
+            if (manfiest.Response != null && manfiest.Response.mobileWorldContentPaths.ContainsKey(locale))
+            {
+                var db = manfiest.Response.mobileWorldContentPaths.Where(x => x.Key == locale).Select(x => x.Value).First();
+                var fileName = db.Split('/').Last();
+                if (curDb.FullName == fileName)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
 }

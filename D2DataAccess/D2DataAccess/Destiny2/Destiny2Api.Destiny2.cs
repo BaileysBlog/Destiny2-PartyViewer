@@ -23,6 +23,18 @@ namespace D2DataAccess.Data
         }
 
 
+        public async Task<ManifestResponse> GetDestinyManifest()
+        {
+            string path = "Destiny2/Manifest/";
+            return await _Web.GetAsync<ManifestResponse>(path).ConfigureAwait(false);
+        }
+
+        public async Task<bool> DownloadManifestDatabase(String FilePath)
+        {
+            return false;
+        }
+
+
         private String FormatComponents(DestinyComponentType[] components)
         {
             var builder = new StringBuilder();

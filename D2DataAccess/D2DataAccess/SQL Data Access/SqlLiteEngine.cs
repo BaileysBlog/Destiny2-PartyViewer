@@ -12,8 +12,11 @@ namespace D2DataAccess.SqLite
     {
         private readonly SQLiteConnection Connection;
 
+        public FileInfo CurrentDatabase;
+
         public SQLiteDestinyEngine(FileInfo LocalPath)
         {
+            CurrentDatabase = LocalPath;
             var builder = new SQLiteConnectionStringBuilder { DataSource = LocalPath.FullName };
             Connection = new SQLiteConnection(builder.ToString());
             Connection.Open();
