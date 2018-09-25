@@ -19,7 +19,11 @@ namespace SearchPlayer
         static void Main(string[] args)
         {
             Console.Title = "Destiny 2 Searcher";
-            var dbUpdate = Api.DatabaseNeedsUpdate().Result;
+
+
+            Api.UpdateDatabaseIfRequired(Environment.CurrentDirectory).Wait();
+
+
             SetupStartingLoop();
         }
 
