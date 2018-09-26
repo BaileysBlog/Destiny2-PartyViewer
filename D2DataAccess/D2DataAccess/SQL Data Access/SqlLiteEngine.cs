@@ -10,18 +10,47 @@ namespace D2DataAccess.SqLite
 {
     public class SQLiteDestinyEngine
     {
-        private readonly SQLiteConnection Connection;
+        private SQLiteConnection Connection;
 
         public FileInfo CurrentDatabase;
 
         public SQLiteDestinyEngine(FileInfo LocalPath)
         {
-            CurrentDatabase = LocalPath;
-            var builder = new SQLiteConnectionStringBuilder { DataSource = LocalPath.FullName };
-            Connection = new SQLiteConnection(builder.ToString());
-            Connection.Open();
-            Connection.EnableExtensions(true);
-            Connection.LoadExtension("SQLite.Interop.dll", "sqlite3_json_init");
+            InitDatabase(LocalPath.FullName);
+        }
+
+        internal void InitDatabase(String overridePath)
+        {
+            CurrentDatabase = new FileInfo(overridePath);
+            if (CurrentDatabase.Exists)
+            {
+                var builder = new SQLiteConnectionStringBuilder { DataSource = CurrentDatabase.FullName };
+                Connection = new SQLiteConnection(builder.ToString());
+                Connection.Open();
+                Connection.EnableExtensions(true);
+                Connection.LoadExtension("SQLite.Interop.dll", "sqlite3_json_init");
+            }
+        }
+
+        internal void Close()
+        {
+            if (Connection != null && Connection.State == System.Data.ConnectionState.Open)
+            {
+                Connection.Close();
+                Connection.Dispose();
+            }
+        }
+
+        private void ThrowIfConnectionUnavailable()
+        {
+            if (Connection == null)
+            {
+                throw new Exception("Database connection isn't open or configured");
+            }
+            else if (Connection != null && Connection.State != System.Data.ConnectionState.Open)
+            {
+                throw new Exception("Database connection isn't open and hasn't been initialized");
+            }
         }
 
 
@@ -29,6 +58,7 @@ namespace D2DataAccess.SqLite
         {
             return await await Task.Factory.StartNew(async () =>
             {
+                ThrowIfConnectionUnavailable();
                 var dataSet = new Dictionary<long, String>();
                 var query = 
 $@"SELECT json_tree.value,json_extract({TableName}.json, '$')
@@ -52,6 +82,7 @@ WHERE json_tree.key = 'hash'";
         {
             return await await Task.Factory.StartNew(async () =>
             {
+                ThrowIfConnectionUnavailable();
                 var dataSet = new Dictionary<long, T>();
 
                 var stringData = await GetTableDump(TableName);
@@ -69,6 +100,7 @@ WHERE json_tree.key = 'hash'";
         {
             return await await Task.Factory.StartNew(async () =>
             {
+                ThrowIfConnectionUnavailable();
                 var dataSet = new Dictionary<long, T>();
                 var query = 
 $@"SELECT json_tree.value,json_extract({TableName}.json, '$')

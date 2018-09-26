@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using D2DataAccess.Extensions;
 using System.Linq;
 using System.IO;
+using System.IO.Compression;
 
 namespace D2DataAccess.Data
 {
@@ -31,7 +32,7 @@ namespace D2DataAccess.Data
             return await _Web.GetAsync<ManifestResponse>(path).ConfigureAwait(false);
         }
 
-        public async Task<bool> UpdateDatabaseIfRequired(String FilePath,String locale = "en")
+        public async Task<bool> UpdateDatabaseIfRequired(String locale = "en")
         {
             var needsUpdate = await DatabaseNeedsUpdate(locale);
 
@@ -39,7 +40,7 @@ namespace D2DataAccess.Data
             {
                 if (needsUpdate.Value)
                 {
-                    return await DownloadManifestDatabase(locale, FilePath);
+                    return await DownloadManifestDatabase(locale);
                 }
                 else
                 {
@@ -52,18 +53,33 @@ namespace D2DataAccess.Data
             }
         }
 
-        public async Task<bool> DownloadManifestDatabase(String locale, String FilePath)
+        public async Task<bool> DownloadManifestDatabase(String locale = "en")
         {
             var manfiest = (await GetDestinyManifest()).Response.mobileWorldContentPaths.Where(x=>x.Key == locale).Select(x=>x.Value).FirstOrDefault();
 
             if (manfiest != null)
             {
-                var zippedDatabase = await _Web.GetStreamAsync(GetIconLink(manfiest));
-                using (var file = new FileStream(Path.Combine(FilePath, manfiest.Split('/').Last()), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
+                var zippedDatabase = await _Web.GetStreamAsync(GetBungieLink(manfiest));
+                String compressedDBName;
+                using (var file = new FileStream(Path.Combine(DataEngine.CurrentDatabase.Directory.FullName, manfiest.Split('/').Last().Replace(".content",".zip")), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read))
                 {
                     await zippedDatabase.CopyToAsync(file);
+                    await file.FlushAsync();
+
+                    compressedDBName = file.Name;
                 }
                 zippedDatabase.Close();
+
+                var zip = ZipFile.OpenRead(compressedDBName);
+                var compressedDB = zip.GetEntry(zip.Entries[0].Name);
+                compressedDB.ExtractToFile(Path.Combine(DataEngine.CurrentDatabase.Directory.FullName, manfiest.Split('/').Last()));
+
+                zip.Dispose();
+
+                File.Delete(compressedDBName);
+                DataEngine.Close();
+                DataEngine.InitDatabase(Path.Combine(DataEngine.CurrentDatabase.Directory.FullName, manfiest.Split('/').Last()));
+
                 return true;
             }
             else

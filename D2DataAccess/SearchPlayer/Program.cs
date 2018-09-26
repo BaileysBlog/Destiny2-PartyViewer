@@ -4,6 +4,7 @@ using D2DataAccess.Models;
 using D2DataAccess.Simple;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,16 +15,16 @@ namespace SearchPlayer
     class Program
     {
         protected const string ApiKey = "57a4ba76e897450f8b106635fd20460b";
-        static Destiny2Api Api = new Destiny2Api(ApiKey, new UserAgentHeader("Destiny 2 Party Viewer", "1.0.0", "Console Program", 0, "https://www.d2-partyviewer.com", "baileymiller@live.com"), @"C:\Users\Bailey Miller\Desktop\Destiny 2 Manifest\worldAssets\world.content");
+        static Destiny2Api Api = new Destiny2Api(ApiKey, 
+            new UserAgentHeader("Destiny 2 Party Viewer", "1.0.0", "Console Program", 0, "https://www.d2-partyviewer.com", "baileymiller@live.com"));
+
         static string TrackedProfile;
         static void Main(string[] args)
         {
             Console.Title = "Destiny 2 Searcher";
-
-
-            Api.UpdateDatabaseIfRequired(Environment.CurrentDirectory).Wait();
-
-
+            
+            Api.UpdateDatabaseIfRequired();
+            
             SetupStartingLoop();
         }
 
@@ -59,6 +60,7 @@ namespace SearchPlayer
                 Environment.Exit(0);
             }
         }
+       
 
         static void DisplayAccountInformation()
         {
