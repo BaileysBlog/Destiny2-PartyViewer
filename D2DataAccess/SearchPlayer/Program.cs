@@ -66,7 +66,7 @@ namespace SearchPlayer
         {
             var profile = Api.SearchDestinyPlayer(TrackedProfile, BungieMembershipType.TigerBlizzard).Result;
 
-            if (profile.Response != null)
+            if (profile.Response != null && profile.Response.Count != 0)
             {
                 var player = profile.Response.First();
                 var characterBreakdowns = Api.GetCharacterBreakdowns(player.membershipId, BungieMembershipType.TigerBlizzard).Result;
@@ -85,6 +85,7 @@ namespace SearchPlayer
             else
             {
                 // Dead
+                SetupStartingLoop();
             }
             Console.WriteLine($"Updating at {DateTime.Now.AddMinutes(1).ToLongTimeString()}");
             Task.Delay(TimeSpan.FromMinutes(1)).Wait();
@@ -102,15 +103,15 @@ $@"{character.Value.Class}-{character.Value.Race} {character.Value.Gender}
 Power-{character.Value.Light} LeveL-{character.Value.LevelProgression.level}
 
 Super       {character.Value.Super.displayProperties.name}
-Primary     {character.Value.Primary.displayProperties.name}
-Seconday    {character.Value.Secondary.displayProperties.name}
-Heavy       {character.Value.Heavy.displayProperties.name}
+Primary     {character.Value.Primary.displayProperties.name} ({character.Value.Primary.ItemInstanceInformation.primaryStat.value})
+Seconday    {character.Value.Secondary.displayProperties.name} ({character.Value.Secondary.ItemInstanceInformation.primaryStat.value})
+Heavy       {character.Value.Heavy.displayProperties.name} ({character.Value.Heavy.ItemInstanceInformation.primaryStat.value})
 
-Helmet      {character.Value.Helm.displayProperties.name}
-Arms        {character.Value.Arms.displayProperties.name}
-Chest       {character.Value.Chest.displayProperties.name}
-Feet        {character.Value.Feet.displayProperties.name}
-Class Gear  {character.Value.ClassGear.displayProperties.name}
+Helmet      {character.Value.Helm.displayProperties.name} ({character.Value.Helm.ItemInstanceInformation.primaryStat.value})
+Arms        {character.Value.Arms.displayProperties.name} ({character.Value.Arms.ItemInstanceInformation.primaryStat.value})
+Chest       {character.Value.Chest.displayProperties.name} ({character.Value.Chest.ItemInstanceInformation.primaryStat.value})
+Feet        {character.Value.Feet.displayProperties.name} ({character.Value.Feet.ItemInstanceInformation.primaryStat.value})
+Class Gear  {character.Value.ClassGear.displayProperties.name} ({character.Value.ClassGear.ItemInstanceInformation.primaryStat.value})
 
 Current Activity
 {(character.Value.CurrentActivity == null ? "Orbit or no activity" : character.Value.CurrentActivity.name)}

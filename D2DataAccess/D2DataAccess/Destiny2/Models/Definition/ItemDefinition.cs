@@ -19,6 +19,7 @@ namespace D2DataAccess.Destiny2.Models.Definition
         public string displaySource { get; set; }
         public UInt32 hash { get; set; }
         public InvetoryDefinition inventory { get; set; }
+        public DestinyItemInstanceComponent ItemInstanceInformation { get; set; }
     }
 
     public class InvetoryDefinition

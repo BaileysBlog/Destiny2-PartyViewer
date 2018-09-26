@@ -60,5 +60,6 @@ namespace D2DataAccess.Destiny2.Models
         public UInt32 statHash { get; set; }
         public int value { get; set; }
         public int maximumValue { get; set; }
+        public string StatName { get; set; }
     }
 }
