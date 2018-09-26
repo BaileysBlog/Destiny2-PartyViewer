@@ -23,7 +23,7 @@ namespace SearchPlayer
         {
             Console.Title = "Destiny 2 Searcher";
             
-            Api.UpdateDatabaseIfRequired();
+            Api.UpdateDatabaseIfRequired().Wait();
             
             SetupStartingLoop();
         }

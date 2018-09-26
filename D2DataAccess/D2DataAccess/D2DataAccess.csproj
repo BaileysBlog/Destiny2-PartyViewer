@@ -2,13 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Bailey Miller</Authors>
+    <RepositoryUrl>https://github.com/BaileysBlog/Destiny2-PartyViewer/tree/master/D2DataAccess/D2DataAccess</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/BaileysBlog/Destiny2-PartyViewer</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="sqlite" Version="3.13.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.109.1" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.109.1" />
   </ItemGroup>
 

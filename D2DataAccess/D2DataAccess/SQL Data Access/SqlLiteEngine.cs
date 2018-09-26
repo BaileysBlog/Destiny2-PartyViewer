@@ -45,7 +45,7 @@ namespace D2DataAccess.SqLite
         {
             if (Connection == null)
             {
-                throw new Exception("Database connection isn't open or configured");
+                throw new Exception("Database connection isn't open or configured consider running UpdateDatabaseIfRequired");
             }
             else if (Connection != null && Connection.State != System.Data.ConnectionState.Open)
             {

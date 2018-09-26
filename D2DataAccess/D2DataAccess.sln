@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchPlayer", "SearchPlaye
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyViewer", "PartyViewer\PartyViewer.csproj", "{C71E4F1D-1961-4928-A257-7221C6A4C21A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PartyWebApi", "PartyWebApi\PartyWebApi.csproj", "{A9B3078C-BEA9-4C80-89CD-D9087A8A4756}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{C71E4F1D-1961-4928-A257-7221C6A4C21A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C71E4F1D-1961-4928-A257-7221C6A4C21A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C71E4F1D-1961-4928-A257-7221C6A4C21A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9B3078C-BEA9-4C80-89CD-D9087A8A4756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9B3078C-BEA9-4C80-89CD-D9087A8A4756}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9B3078C-BEA9-4C80-89CD-D9087A8A4756}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9B3078C-BEA9-4C80-89CD-D9087A8A4756}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
