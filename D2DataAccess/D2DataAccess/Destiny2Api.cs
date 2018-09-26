@@ -36,7 +36,7 @@ namespace D2DataAccess.Data
             _Web.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", UserAgent.ToString());
             _Web.DefaultRequestHeaders.Add("Accept", "applicaiton/json");
 
-            InitDataWithoutPath();
+            InitDataWithoutPath(Environment.CurrentDirectory);
         }
 
         public Destiny2Api(String Key, UserAgentHeader Header, String DB_Path)
@@ -60,7 +60,7 @@ namespace D2DataAccess.Data
             _Web.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", UserAgent.ToString());
             _Web.DefaultRequestHeaders.Add("Accept", "applicaiton/json");
 
-            InitDataWithoutPath();
+            InitDataWithoutPath(DB_Root);
         }
 
         public Destiny2Api(String Key, UserAgentHeader Header)
@@ -72,13 +72,18 @@ namespace D2DataAccess.Data
             _Web.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", UserAgent.ToString());
             _Web.DefaultRequestHeaders.Add("Accept", "applicaiton/json");
 
-            InitDataWithoutPath();
+            InitDataWithoutPath(Environment.CurrentDirectory);
         }
 
-        private void InitDataWithoutPath()
+        private void InitDataWithoutPath(DirectoryInfo Root)
         {
-            var alreadyHasFile = new DirectoryInfo(Environment.CurrentDirectory).GetFiles("*.content", SearchOption.AllDirectories).FirstOrDefault();
-            DataEngine = new SQLiteDestinyEngine(new FileInfo(Path.Combine(Environment.CurrentDirectory, alreadyHasFile != null ? alreadyHasFile.FullName : "FakeDB.content")));
+            var alreadyHasFile = Root.GetFiles("*.content", SearchOption.AllDirectories).FirstOrDefault();
+            DataEngine = new SQLiteDestinyEngine(new FileInfo(Path.Combine(Root.FullName, alreadyHasFile != null ? alreadyHasFile.FullName : "FakeDB.content")));
+        }
+
+        private void InitDataWithoutPath(String Root)
+        {
+            InitDataWithoutPath(new DirectoryInfo(Root));
         }
 
         public String GetBungieLink(String IconPath)

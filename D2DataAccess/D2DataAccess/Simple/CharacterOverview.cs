@@ -14,7 +14,7 @@ namespace D2DataAccess.Simple
         public int Light { get; set; }
         public DestinyProgression LevelProgression { get; set; }
         public ItemDefinition Emblem { get; set; }
-        
+
         public ItemDefinition Super { get; set; }
 
         public ItemDefinition Primary { get; set; }
@@ -31,6 +31,8 @@ namespace D2DataAccess.Simple
         public ItemDefinition Ship { get; set; }
 
         public DestinyDisplayPropertiesDefinition CurrentActivity { get; set; }
+
+        public string BungieRoot { get; set; } = "https://www.bungie.net";
     }
     
 }
