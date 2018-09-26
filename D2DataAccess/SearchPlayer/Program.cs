@@ -96,7 +96,7 @@ namespace SearchPlayer
         static void LogCharacterData(Dictionary<long, CharacterOverview> characterBreakdowns)
         {
             Console.Clear();
-            foreach (var character in characterBreakdowns)
+            foreach (var character in characterBreakdowns.OrderByDescending(x=>x.Value.Light))
             {
                 Console.WriteLine(
 $@"{character.Value.Class}-{character.Value.Race} {character.Value.Gender}
