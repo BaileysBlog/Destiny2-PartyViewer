@@ -96,6 +96,30 @@ WHERE json_tree.key = 'hash'";
             }).ConfigureAwait(false);
         }
 
+
+        public async Task<Dictionary<long, T>> GetDetailedInformationFromHash<T>(string TableName, params ulong[] itemHashes)
+        {
+            return await await Task.Factory.StartNew(async () =>
+            {
+                ThrowIfConnectionUnavailable();
+                var dataSet = new Dictionary<long, T>();
+                var query =
+$@"SELECT json_tree.value,json_extract({TableName}.json, '$')
+FROM {TableName}, json_tree({TableName}.json, '$')
+WHERE json_tree.key = 'hash' and json_tree.value in ({GetArrayWhereBlock(itemHashes)})";
+                using (var command = new SQLiteCommand(query, Connection))
+                {
+                    var reader = await command.ExecuteReaderAsync();
+                    while (await reader.ReadAsync())
+                    {
+                        var body = reader.GetString(1);
+                        dataSet.Add(reader.GetInt64(0), JsonConvert.DeserializeObject<T>(body));
+                    }
+                }
+                return dataSet;
+            }).ConfigureAwait(false);
+        }
+
         public async Task<Dictionary<long, T>> GetDetailedInformationFromHash<T>(string TableName, params long[] itemHashes)
         {
             return await await Task.Factory.StartNew(async () =>

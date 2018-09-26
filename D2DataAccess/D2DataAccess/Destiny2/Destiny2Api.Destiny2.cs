@@ -89,7 +89,7 @@ namespace D2DataAccess.Data
         }
 
 
-        private String FormatComponents(DestinyComponentType[] components)
+        internal String FormatComponents(DestinyComponentType[] components)
         {
             var builder = new StringBuilder();
 

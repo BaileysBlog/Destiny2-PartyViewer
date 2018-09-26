@@ -23,22 +23,26 @@ namespace D2DataAccess.Data
 
             Dictionary<long, CharacterOverview> data = new Dictionary<long, CharacterOverview>();
 
-            var characters = await GetProfile(membershipId, membershipType, DestinyComponentType.Characters, DestinyComponentType.CharacterEquipment, DestinyComponentType.CharacterActivities);
+            var characters = await GetProfile(membershipId, membershipType, 
+                DestinyComponentType.Characters, 
+                DestinyComponentType.CharacterEquipment, 
+                DestinyComponentType.CharacterActivities, 
+                DestinyComponentType.ItemStats,
+                DestinyComponentType.ItemInstances);
 
 
             foreach (var character in characters.Response.characters.data)
             {
                 var curActivity = characters.Response.characterActivities.data.Where(x => x.Key == character.Key).Select(x => x.Value).First();
-                var characterEquipment = characters.Response.characterEquipment.data.Where(x => x.Key == character.Key).FirstOrDefault().Value.items.Select(x => x.itemHash);
-                var items = await DataEngine.GetDetailedInformationFromHash<ItemDefinition>(DestinyTable.ItemDefinition, characterEquipment.ToArray());
+                var characterEquipment = characters.Response.characterEquipment.data.Where(x => x.Key == character.Key).FirstOrDefault().Value.items.Select(x => new { x.itemHash, x.itemInstanceId });
+                var items = await DataEngine.GetDetailedInformationFromHash<ItemDefinition>(DestinyTable.ItemDefinition, characterEquipment.Select(x=>x.itemHash).ToArray());
                 var characterStats = characters.Response.characters.data.Where(x => x.Key == character.Key).FirstOrDefault();
 
 
+                
                 var activityDisplay = (await DataEngine.GetDetailedInformationFromHash<dynamic>(DestinyTable.ActivityDefinition, curActivity.currentActivityHash))
                     .Select(x=>x.Value.displayProperties).FirstOrDefault();
-
-
-
+                
                 var className = (await DataEngine.GetDetailedInformationFromHash<dynamic>(DestinyTable.ClassDefinition, character.Value.classHash))
                     .Where(x=>x.Key == character.Value.classHash)
                     .Select(x=>x.Value)
@@ -88,6 +92,18 @@ namespace D2DataAccess.Data
 
                 var superHash = (await DataEngine.GetTableDump<dynamic>(DestinyTable.InventoryBucketDefinition))
                     .Where(x => x.Value.displayProperties.name == "Subclass").Select(x => x.Key).First();
+
+
+                var pItemDef = items.Where(x => x.Value.inventory.bucketTypeHash == primaryHash).Select(x => x.Value).First();
+
+                var intaItem = characterEquipment.Where(x => x.itemHash == pItemDef.hash).Select(x => x.itemInstanceId).First();
+
+                var primaryData = new {
+                    ItemDef = pItemDef,
+                    InstancedItemHash = intaItem,
+                    Info = characters.Response.itemComponents.instances.data.Where(x=>x.Key == intaItem.Value).Select(x=>x.Value.primaryStat)
+                };
+
 
                 data.Add(character.Key, new CharacterOverview()
                 {

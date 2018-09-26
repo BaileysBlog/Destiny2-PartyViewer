@@ -19,6 +19,7 @@ namespace D2DataAccess.Destiny2.Models.Component_Types
     {
         public ItemState state { get; set; }
         public long itemHash { get; set; }
+        public Nullable<long> itemInstanceId { get; set; }
 
     }
 }

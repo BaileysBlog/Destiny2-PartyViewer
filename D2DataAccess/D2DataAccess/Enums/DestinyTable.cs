@@ -12,5 +12,6 @@ namespace D2DataAccess.Enums
         public const String ItemDefinition = "DestinyInventoryItemDefinition";
         public const String InventoryBucketDefinition = "DestinyInventoryBucketDefinition";
         public const String ActivityDefinition = "DestinyActivityDefinition";
+        public const String StatDefinition = "DestinyStatDefinition";
     }
 }
