@@ -87,9 +87,9 @@ namespace D2DataAccess.Data
             {
                 var items = await DataEngine.GetDetailedInformationFromHash<ItemDefinition>(DestinyTable.ItemDefinition, characterEquipment.Select(x => (ulong)x.itemHash).ToArray());
                 var itemHash = (await DataEngine.GetTableDump<dynamic>(DestinyTable.InventoryBucketDefinition))
-                        .Where(x => x.Value.displayProperties.name == ItemFieldName).Select(x => x.Key).First();
+                        .Where(x => x.Value.displayProperties.name == ItemFieldName).Select(x => new { x.Key, x.Value }).First();
 
-                var item = items.Where(x => x.Value.inventory.bucketTypeHash == itemHash).Select(x => x.Value).First();
+                var item = items.Where(x => x.Value.inventory.bucketTypeHash == itemHash.Key).Select(x => x.Value).First();
 
                 var intaItem = (long)(characterEquipment.Where(x => x.itemHash == item.hash).Select(x => x.itemInstanceId).First());
 
